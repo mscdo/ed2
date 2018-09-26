@@ -2,6 +2,10 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
+#define key(A)      (A.dist)
+#define less(A, B)  (key(A) < key(B))
+...
+
 /*
 * STRUCTS
 */
@@ -40,10 +44,12 @@ void unePai(int a, int b, int *pai);
 * GRAFO E KRUSKAL
 */
 
-void criaVetorAdjacencias(float **matrizTriangularSuperior, int tamanhoPilha, Vertice* vetor[]);
-void insereOrdenado(Vertice *a, int i);
-void mst_kruskal(Vertice* vetor[], int tamanhoPilha);
+//void criaVetorAdjacencias(float **matrizTriangularSuperior, int tamanhoPilha, Vertice* vetor[]);
+//void insereOrdenado(Vertice *a, int i);
+//void mst_kruskal(Vertice* vetor[], int tamanhoPilha);
 void liberaMatriz(float **matrizTriangularSuperior, int tamanhoPilha);
+Vertice* criaArcos(float **matrizTriangularSuperior, int tamanhoPilha);
+void quick_sort(Vertice* grafo, int left, int right);
 
 
 

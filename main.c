@@ -7,7 +7,7 @@
 int main(int argc, char *argv[]){
 
 	float x, y, **matrizTriangularSuperior;
-	int tamanhoPilha, aresta;
+	int tamanhoPilha;
 	int *pai;
 	char NAME[15], COMMENT[15], DIMENSION[15], lixo[30];
 	char number, name[40], nome_arquivo[40];
@@ -47,10 +47,46 @@ int main(int argc, char *argv[]){
 	preencheMatriz(tamanhoPilha, pilha, matrizTriangularSuperior);
 
 	pai = criaPai(tamanhoPilha);
-	aresta = tamanhoPilha - 1; //Nao entendi essa
+	
+	nVertices = tamanhoPilha;
+	nArestas = (nVertices*(nVertices - 1) ) /2;
 
-	Vertice *vetor[tamanhoPilha];
-	criaVetorAdjacencias(matrizTriangularSuperior, tamanhoPilha, vetor);
+	/*
+	* ***********************
+	*     MST - KRUSKAL
+	* ***********************
+	*/
+
+	Vertice* vetorArcos = malloc(sizeof(Vertice));
+	vetorArcos = criaArcos(matrizTriangularSuperior, tamanhoPilha);
+
+	quick_sort(vetorArcos, 0, nArestas-1);
+
+	double peso_arvore = 0, tamanho_arvore = 0;
+	
+	parent = (int*)malloc(nVertices*sizeof(int));
+	rank   = (int*)calloc(nVertices,sizeof(int));
+
+	for(i=0; i<nVertices; i++) parent[i] = i;
+	
+	for(i=0; tamanho_arvore<nVertices-1; i++) {
+		v1 = get_root(grafo[i]->vertice1);
+		v2 = get_root(grafo[i]->vertice2);
+		
+		if (v1!=v2) {
+			if (rank[v1] > rank[v2])
+				parent[v2] = v1;
+			else
+				parent[v1] = v2;
+			
+			if (rank[v1] == rank[v2])
+				rank[v2]++;
+			
+			peso_arvore += grafo[i]->peso;
+			tamanho_arvore++;
+		}
+	}
+	
 	
 	FILE* arquivo_mst;
 
