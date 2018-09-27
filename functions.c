@@ -15,15 +15,8 @@ struct ponto{
 	struct ponto *prox;
 };
 
-typedef struct {
-  int src, tgt, dist;
-} Edge;
-
-
 struct vertice{
-    int vertice1;
-    int vertice2;
-    int peso;
+    int vertice1, vertice2, peso;
 };
 
 /**********************************/
@@ -141,7 +134,7 @@ void preencheMatriz(int tamanhoPilha, Ponto *pilha, float **matrizTriangularSupe
 	for(int i = 0; i < tamanhoPilha; i++){
 		aux2 = aux1;
 
-		for(int j = i; j<tamanhoPilha; j++){
+		for(int j = i; j< tamanhoPilha; j++){
 			distancia = calculaDistancia(aux1->x, aux1->y, aux2->x, aux2->y);
 			matrizTriangularSuperior[i][j] = distancia;
 			
@@ -168,7 +161,7 @@ void imprimeMatriz(int tamanhoPilha, float **matrizTriangularSuperior){
 		printf("\nlinha %i \n",i);
 
 		for(int j = 0; j < tamanhoPilha; j++){
-			printf("-%f-", matrizTriangularSuperior[i][j]);	
+			printf("-%0.2f-", matrizTriangularSuperior[i][j]);	
 		}	
 	}			
 }
@@ -203,79 +196,6 @@ int MenorLinha(float **matrizTriangularSuperior, int i, int tamanhoPilha){
 void unePai(int a, int b, int *pai){
     pai[a] = b;
 }
-/*
-void criaVetorAdjacencias(float **matrizTriangularSuperior, int tamanhoPilha, Vertice* vetor[]) {
-	int m, i, j;
-
- 	// Aloca vetor
- 	for(m = 0; m < tamanhoPilha; m++){
- 		vetor[m] = malloc(sizeof(Vertice*));
- 		vetor[m]->prox = NULL;
- 	}
-
- 	for(i = 0; i < tamanhoPilha; i++){
- 		for(j = i; j < tamanhoPilha; j++){
-
- 			if (matrizTriangularSuperior[i][j] != 0){
- 				if (vetor[i] == NULL){ //ainda não está no vetor
- 					
- 					vetor[i]->vertice_id = i;
- 					vetor[i]->peso = 0;
-
- 				}else{
- 					//já possui conexoes ou já foi inicializado
-
- 					if(vetor[i]->prox == NULL){
- 						//Não possui nenhuma conexão
- 						vetor[i]->prox = malloc(sizeof(Vertice));
- 						vetor[i]->vertice_id = i;
- 						vetor[i]->peso = matrizTriangularSuperior[i][j];
- 						vetor[i]->prox->prox=NULL;
- 					}else{
- 						//insere ordenado
- 						insereOrdenado(vetor[i]->prox, i);
- 					}
- 				}
- 			}
- 		}
- 	}
-}*/
-/*
-void insereOrdenado(Vertice *a, int i){
-
-	Vertice* tmp;
-
-	if (a[i].peso <= a[i].prox->peso){
-		
-		tmp = a[i].prox;
-		Vertice *aux = malloc(sizeof(Vertice));
-		a[i].prox = aux;
-		aux->prox = tmp;
-
-		free(tmp);
-		
-	}else{
-		insereOrdenado(a->prox, i);
-	}
-} 
-*/
-
-/*
-Vertice* procuraMenorArco(Vertice* vetor, int tamanhoPilha){
-	int aux=0;
-	Vertice* tmp = malloc(sizeof(Vertice));
-	tmp->peso = 0;
-	tmp->prox = NULL;
-
-	while(aux <= tamanhoPilha){
-		if(vetor[aux].prox->peso < tmp->peso){
-			tmp->peso = vetor[aux].peso;
-			tmp->vertice_id = vetor[aux].vertice_id;
-		}		
-		aux++;
-	}
-	return tmp;
-}*/
 
 void liberaMatriz(float **matrizTriangularSuperior, int tamanhoPilha){
 
@@ -289,57 +209,44 @@ void liberaMatriz(float **matrizTriangularSuperior, int tamanhoPilha){
 	}
 }
 
-/*void imprimeVetorAdjacencias(Vertice* vetor, int tamanhoPilha, FILE* arquivo){
-	int tmp = 0;
-	Vertice* aux = malloc(sizeof(Vertice));
-
-	while (tmp <= tamanhoPilha){
-		*aux = vetor[tmp];
-		while(vetor[tmp].prox != NULL){
-			fprintf(arquivo, "%d %d \n", vetor[tmp].vertice_id, vetor[tmp].prox->vertice_id);
-			imprimeVetorAdjacencias(vetor[tmp].prox, tamanhoPilha, arquivo);
-		}
-		tmp++;
-	}
-}
-*/
-Vertice* criaArcos(float **matrizTriangularSuperior, int tamanhoPilha){
-	Vertice *arcos[tamanhoPilha];
+Vertice* criaArcos(float **matrizTriangularSuperior, int tamanhoPilha, int nArestas){
+	Vertice *arcos = malloc(nArestas*sizeof(Vertice));
 	int i, j;
 
 	for(i = 0; i < tamanhoPilha; i++){
- 		for(j = i; j < tamanhoPilha; j++){
- 			arcos[j] = malloc(sizeof(Vertice));
+ 		for(j = i+1; j < tamanhoPilha; j++){
  			arcos[j].peso = matrizTriangularSuperior[i][j];
  			arcos[j].vertice1 = i;
  			arcos[j].vertice2 = j;
-		}
+ 		}
 	}
 
-	return arcos;
+	return 	arcos;
 
 }
 
-int get_root(int i){
+int get_root(int i, int* parent, int nVertices){
+	
 	while(i != parent[i]) {
-	  i = parent[i];
+	  i = parent[i]; 
+		printf("%d \n", parent[i]);
 	}
 	return i;
 }
 
 void quick_sort(Vertice* grafo, int left, int right) {
     int i, j, peso_pivo;
-	Vertice* aux;
-     
+	struct vertice aux;
+
     i = left;
     j = right;
-    peso_pivo = grafo[(left + right) / 2]->peso;
+    peso_pivo = grafo[(left + right) / 2].peso;
      
     while(i <= j) {
-        while(grafo[i]->w < peso_pivo && i < right)
+        while(grafo[i].peso < peso_pivo && i < right)
             i++;
 		
-        while(grafo[j]->w > peso_pivo && j > left)
+        while(grafo[j].peso > peso_pivo && j > left)
             j--;
 		
         if(i <= j) {
@@ -356,4 +263,44 @@ void quick_sort(Vertice* grafo, int left, int right) {
     
     if(i < right)
         quick_sort(grafo, i, right);
+}
+
+void mst(Vertice* grafo, int nVertices, int nArestas, FILE* arquivo) {
+
+	int i = 0, v1, v2, valor;
+	int *parent, *rank;
+	
+	quick_sort(grafo, 0, nArestas-1);
+	
+	double peso_arvore = 0, tamanho_arvore = 0;
+	
+	parent = malloc(nVertices*sizeof(int));
+	rank   = calloc(nVertices,sizeof(int));
+	
+	for(i=0; i < nVertices; i++){
+		parent[i] = i; 
+	}
+
+	for(i=0; tamanho_arvore < (nVertices-1); i++) {
+		
+		v1 = get_root(grafo[i].vertice1, parent, nVertices);
+		v2 = get_root(grafo[i].vertice2, parent, nVertices);
+		
+		if (v1!=v2) {
+			if (rank[v1] > rank[v2])
+				parent[v2] = v1;
+			else
+				parent[v1] = v2;
+			
+			if (rank[v1] == rank[v2])
+				rank[v2]++;
+			
+			peso_arvore += grafo[i].peso;
+			tamanho_arvore++;
+		}
+	}
+
+	//print
+	free(grafo);
+
 }

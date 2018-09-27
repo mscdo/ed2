@@ -4,13 +4,13 @@
 #include "functions.h"
 
 
-int main(int argc, char *argv[]){
-
+int main(){
+//int argc, char *argv[]
 	float x, y, **matrizTriangularSuperior;
-	int tamanhoPilha;
+	int tamanhoPilha, nVertices, nArestas;
 	int *pai;
-	char NAME[15], COMMENT[15], DIMENSION[15], lixo[30];
-	char number, name[40], nome_arquivo[40];
+	char NAME[15], COMMENT[15], DIMENSION[15], lixo[30],linha1[50],linha2[50],linha3[50],linha4[50],linha5[50],linha6[50];
+	char number[8], name[40], nome_arquivo[40];
 
 	Ponto *pilha = malloc(sizeof(Ponto*));
 
@@ -20,76 +20,44 @@ int main(int argc, char *argv[]){
 	****************************
 	*/
 
-	FILE *arquivo = fopen(argv[1], "r");
+	FILE *arquivo = fopen("../in/berlin52.tsp", "r");
 
 	if(arquivo == NULL){
 	    printf("Erro, nao foi possivel abrir o arquivo\n");
-	    exit(1);
+	}else{
+		fgets(linha1, 50, arquivo);
+		fgets(linha2, 50, arquivo);
+		fgets(linha3, 50, arquivo);
+		fgets(linha4, 50, arquivo);
+		fgets(linha5, 50, arquivo);
+		fgets(linha6, 50, arquivo);
+		while((fscanf(arquivo,"%s %f %f\n", number, &x, &y))!=EOF){
+			if(number[0]=='E'){//armengue se vc pensar em alguma ideia melhor, por favor kkkk
+				break;		
+			}else{
+				push(pilha,x,y);
+				tamanhoPilha++;
+			}
+		}			
 	}
-	
-	fscanf(arquivo, "%s %s \n", NAME, name);	
-	fgets(COMMENT, 50, arquivo);
-	fgets(lixo, 50, arquivo);
-	fgets(DIMENSION, 50, arquivo);
-	fgets(lixo, 50, arquivo); // ignora a linha WEIGHT TYPE
-	fgets(lixo, 50, arquivo); // ignora a linha NODE SECTION
-	
-	fscanf(arquivo,"%s %f %f \n", &number, &x, &y);
-
-	do{
-		push(pilha, x, y);
-		tamanhoPilha++; 
-	} while(number != EOF);
 
 	fclose(arquivo);
 
 	matrizTriangularSuperior = alocaMatriz(tamanhoPilha);
 	preencheMatriz(tamanhoPilha, pilha, matrizTriangularSuperior);
+	
 
 	pai = criaPai(tamanhoPilha);
 	
-	nVertices = tamanhoPilha;
-	nArestas = (nVertices*(nVertices - 1) ) /2;
+	nVertices = tamanhoPilha; 
+	nArestas = (nVertices*(nVertices - 1) ) /2;  
 
-	/*
-	* ***********************
-	*     MST - KRUSKAL
-	* ***********************
-	*/
-
-	Vertice* vetorArcos = malloc(sizeof(Vertice));
-	vetorArcos = criaArcos(matrizTriangularSuperior, tamanhoPilha);
-
-	quick_sort(vetorArcos, 0, nArestas-1);
-
-	double peso_arvore = 0, tamanho_arvore = 0;
 	
-	parent = (int*)malloc(nVertices*sizeof(int));
-	rank   = (int*)calloc(nVertices,sizeof(int));
 
-	for(i=0; i<nVertices; i++) parent[i] = i;
-	
-	for(i=0; tamanho_arvore<nVertices-1; i++) {
-		v1 = get_root(grafo[i]->vertice1);
-		v2 = get_root(grafo[i]->vertice2);
-		
-		if (v1!=v2) {
-			if (rank[v1] > rank[v2])
-				parent[v2] = v1;
-			else
-				parent[v1] = v2;
-			
-			if (rank[v1] == rank[v2])
-				rank[v2]++;
-			
-			peso_arvore += grafo[i]->peso;
-			tamanho_arvore++;
-		}
-	}
-	
-	
+	Vertice* vetorArcos;
+	vetorArcos = criaArcos(matrizTriangularSuperior, tamanhoPilha, nArestas);
+
 	FILE* arquivo_mst;
-
 	strcpy(nome_arquivo, (strcat(name, ".mst")));
 	arquivo_mst = fopen(nome_arquivo, "wt");
 
@@ -104,11 +72,12 @@ int main(int argc, char *argv[]){
 	fprintf(arquivo_mst, "%s \n", COMMENT);
 	fprintf(arquivo_mst, "%s \n", DIMENSION);
 	fprintf(arquivo_mst, "MST_SECTION \n");
-	//imprimeVetorAdjacencias(vetor, tamanhoPilha, arquivo_mst);	
 	fprintf(arquivo_mst, "EOF");	
+	
+	mst(vetorArcos, nVertices, nArestas, arquivo_mst);
 
 	fclose(arquivo_mst);
-	
+
 	//percorre(pilha);
 	liberaMatriz(matrizTriangularSuperior, tamanhoPilha);
 	liberaPilha(pilha); //tem que liberar matriz

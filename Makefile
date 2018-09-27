@@ -1,6 +1,4 @@
 all:
-	gcc -std=c99 -Wall -g -c main.c functions.c functions.h
-	gcc -Wall -g -o -lm  main main.o functions.o
-
+	gcc -g main.c functions.c functions.h -std=c99 -lm -o teste
 clean:
 	rm -rf *.o	

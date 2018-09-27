@@ -1,11 +1,5 @@
-
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
-
-#define key(A)      (A.dist)
-#define less(A, B)  (key(A) < key(B))
-...
-
 /*
 * STRUCTS
 */
@@ -48,9 +42,10 @@ void unePai(int a, int b, int *pai);
 //void insereOrdenado(Vertice *a, int i);
 //void mst_kruskal(Vertice* vetor[], int tamanhoPilha);
 void liberaMatriz(float **matrizTriangularSuperior, int tamanhoPilha);
-Vertice* criaArcos(float **matrizTriangularSuperior, int tamanhoPilha);
+Vertice* criaArcos(float **matrizTriangularSuperior, int tamanhoPilha, int nArestas);
 void quick_sort(Vertice* grafo, int left, int right);
-
-
+void mst(Vertice* grafo, int nVertices, int nArestas);
+int get_root(int var, int* parent, int nVertices);
+void imprimeMatriz(int tamanhoPilha, float **matrizTriangularSuperior);
 
 #endif
