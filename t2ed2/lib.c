@@ -2,108 +2,95 @@
 #include <stdio.h>
 #include "lib.h"
 
-void
-fix_up(int *vetor, int k) {
-
-	while (k > 1 && less(vetor[k/2], vetor[k])) {
-		exch(vetor[k], vetor[k/2]);
-		k = k/2;
-	}
-}
-
-void
-fix_down(int *vetor, int sz, int k){
-
-	while (2 * k <= sz) {
-		int j = 2 * k;
-
-		if (j < sz && less(vetor[j], vetor[j+1])){
-			j++;
-		}
-
-		if (!less(vetor[k], vetor[j])) {
-			break;
-		}
-
-		exch(vetor[k], vetor[j]);
-		k = j;
-	}
-}
-
-
-void
-deleta_maximo(int *vetor, int N) {
-	int max = vetor[1];
-
-	exch(vetor[1], vetor[N]);
-	N--;
-	fix_down(vetor, N, 1);
-}
-
-
-
 int
-partition(int *vetor, int lo, int hi) {
-	int i = lo, j = hi+1;
-	int v = vetor[lo];
+partition(int *vetor, int low, int hi) {
+	int i = low, j = hi+1;
+	int v = vetor[low];
 
 	while (1) {
 		while (less(vetor[++i], v))
 			if (i == hi) break;
 		while (less(v, vetor[--j]))
-			if (j == lo) break;
+			if (j == low) break;
 		if (i >= j) break;
 		exch(vetor[i], vetor[j]);
 	}
-	exch(vetor[lo], vetor[j]);
+	exch(vetor[low], vetor[j]);
 
 	return j;
 }
 
 void
-quicksort(int *vetor, int lo, int hi) {
-	if (hi <= lo) {
+quicksort(int *vetor, int low, int hi) {
+	if (hi <= low) {
 		return;
 	}
 
-	int j = partition(vetor, lo, hi);
+	int j = partition(vetor, low, hi);
 
-	quicksort(vetor, lo, j-1);
+	quicksort(vetor, low, j-1);
 	quicksort(vetor, j+1, hi);
 }
 
 int
-worst_fit(int *vetor, int lo, int N){
+worst_fit(int *vetor, int low, int N){
 
-	int soma = 0, count = 0 ;
+	int soma = 0, contagem = 0 ;
 
-	if(lo <= N){
-		if(lo == N){
-			count++;
+	if(low <= N){
+		if(low == N){
+			contagem++;
 		}
 		else
 		{
 			do{
-				if(lo==N){
+				if(low==N){
 					break;
 				}
-				soma += vetor[lo];
-				lo++;
-			}while(soma <= MAX_SIZE_OF_PACKAGE);
+				soma += vetor[low];
+				low++;
+			}while(soma <= TAMANHO_MAX_DISCO);
 
-			count ++;
-			count += worst_fit(vetor, lo, N);
+			contagem ++;
+			contagem += worst_fit(vetor, low, N);
+		}
+	}
+	return contagem;
+
+}
+
+int
+best_fit(int *vetor, int N){
+
+	int i = 1, j, k = 0,
+			melhor_dif_minima = TAMANHO_MAX_DISCO,
+			melhor_indice = 1,
+			contagem = 0,
+			discos[N];
+
+	while (k < N){
+		discos[k] = TAMANHO_MAX_DISCO;
+		k++;
+	}
+
+	for (i = 1; i <= N; i++){
+		melhor_dif_minima = TAMANHO_MAX_DISCO;
+		for(j = 0; j < contagem; j++){
+			if((discos[j] >= vetor[i]) && (discos[j] - vetor[i]) < melhor_dif_minima){
+				melhor_dif_minima = (discos[j] - vetor[i]);
+				melhor_indice = j;
+			}
+		}
+
+		if (melhor_dif_minima != TAMANHO_MAX_DISCO){
+			discos[melhor_indice] -= vetor[i];
+		}
+		else
+		{
+			discos[contagem] -= vetor[i];
+			contagem++;
 		}
 	}
 
-	return count;
-
+	return contagem;
 }
-
-void
-best_fit(int *vetor, int N){
-
-
-
-}
-
