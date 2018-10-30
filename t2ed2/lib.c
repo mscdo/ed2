@@ -3,94 +3,96 @@
 #include "lib.h"
 
 int
-partition(int *vetor, int low, int hi) {
+partition(int *array, int low, int hi) {
 	int i = low, j = hi+1;
-	int v = vetor[low];
+	int v = array[low];
 
 	while (1) {
-		while (less(vetor[++i], v))
+		while (less(array[++i], v))
 			if (i == hi) break;
-		while (less(v, vetor[--j]))
+		while (less(v, array[--j]))
 			if (j == low) break;
 		if (i >= j) break;
-		exch(vetor[i], vetor[j]);
+		exch(array[i], array[j]);
 	}
-	exch(vetor[low], vetor[j]);
+	exch(array[low], array[j]);
 
 	return j;
 }
 
 void
-quicksort(int *vetor, int low, int hi) {
+quicksort(int *array, int low, int hi) {
 	if (hi <= low) {
 		return;
 	}
 
-	int j = partition(vetor, low, hi);
+	int j = partition(array, low, hi);
 
-	quicksort(vetor, low, j-1);
-	quicksort(vetor, j+1, hi);
+	quicksort(array, low, j-1);
+	quicksort(array, j+1, hi);
 }
 
 int
-worst_fit(int *vetor, int low, int N){
+worst_fit(int *array, int low, int N){
 
-	int soma = 0, contagem = 0 ;
+	int sum = 0, count = 0 ;
 
-	if(low <= N){
-		if(low == N){
-			contagem++;
+	if (low <= N){
+		if (low == N){
+			count++;
 		}
 		else
 		{
-			do{
-				if(low==N){
+			do {
+				if (low==N){
 					break;
 				}
-				soma += vetor[low];
+				sum += array[low];
 				low++;
-			}while(soma <= TAMANHO_MAX_DISCO);
+			} while (sum <= MAX_SIZE_DISK);
 
-			contagem ++;
-			contagem += worst_fit(vetor, low, N);
+			count ++;
+			count += worst_fit(array, low, N);
 		}
 	}
-	return contagem;
+	return count;
 
 }
 
 int
-best_fit(int *vetor, int N){
+best_fit(int *array, int N){
 
 	int i = 1, j, k = 0,
-			melhor_dif_minima = TAMANHO_MAX_DISCO,
-			melhor_indice = 1,
-			contagem = 0,
-			discos[N];
+			best_min_diff = MAX_SIZE_DISK,
+			best_index = 1,
+			count = 0,
+			disks[N];
 
 	while (k < N){
-		discos[k] = TAMANHO_MAX_DISCO;
+		disks[k] = MAX_SIZE_DISK;
 		k++;
 	}
 
 	for (i = 1; i <= N; i++){
-		melhor_dif_minima = TAMANHO_MAX_DISCO;
-		for(j = 0; j < contagem; j++){
-			if((discos[j] >= vetor[i]) && (discos[j] - vetor[i]) < melhor_dif_minima){
-				melhor_dif_minima = (discos[j] - vetor[i]);
-				melhor_indice = j;
+
+		best_min_diff = MAX_SIZE_DISK;
+
+		for (j = 0; j < count; j++){
+			if ((disks[j] >= array[i]) && (disks[j] - array[i]) < best_min_diff){
+				best_min_diff = (disks[j] - array[i]);
+				best_index = j;
 			}
 		}
 
-		if (melhor_dif_minima != TAMANHO_MAX_DISCO){
-			discos[melhor_indice] -= vetor[i];
+		if (best_min_diff != MAX_SIZE_DISK){
+			disks[best_index] -= array[i];
 		}
 		else
 		{
-			discos[contagem] -= vetor[i];
-			contagem++;
+			disks[count] -= array[i];
+			count++;
 		}
 	}
 
-	return contagem;
+	return count;
 }

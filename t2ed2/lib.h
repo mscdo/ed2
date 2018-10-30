@@ -8,22 +8,22 @@
 #ifndef LIB_H_
 #define LIB_H_
 
-#define TAMANHO_MAX_DISCO 1000000
+#define MAX_SIZE_DISK 1000000
 #define key(A)	(A)
 #define less(B, A)	(key(A) < key(B))
 #define exch(A, B)	{ int t = A; A = B; B = t; }
 #define soma(A, B)	(A+B)
 
 int
-partition(int *vetor, int lo, int hi);
+partition(int *array, int low, int hi);
 
 void
-quicksort(int *vetor, int lo, int hi);
+quicksort(int *array, int low, int hi);
 
 int
-worst_fit(int *vetor, int lo, int N); //considera os arquivos na ordem que eles são apresentados
+worst_fit(int *array, int low, int N);
 
 int
-best_fit(int *vetor, int N);
+best_fit(int *array, int N);
 
 #endif /* LIB_H_ */

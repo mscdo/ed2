@@ -2,52 +2,50 @@
 #include <stdlib.h>
 #include "lib.h"
 
-int main(int argc, char *argv[]){
+int
+main (int argc, char *argv[]){
 
-	int N, i, tamanho_arquivo, num_discos = 0;
-	char string_arquivo[10];
+	int N, i, size_of_file, number_of_disks = 0;
+	char file_string[10];
 
 
-	FILE *arquivo;
-	arquivo = fopen (argv[1], "r");
+	FILE *file;
+	file = fopen (argv[1], "r");
 
-	if(arquivo == NULL){
-		printf("Não foi possível abrir o arquivo. \n");
+	if (file == NULL){
+		printf ("Não foi possível abrir o file. \n");
 		return 1;
 	}
 
-	fscanf(arquivo, "%d", &N);
+	fscanf(file, "%d", &N);
 
-	int vetor_dados[N + 1];
+	int data_arrays[N + 1];
 
 	for (i = 1;i <= N;i ++){
-		fscanf (arquivo, "%s", string_arquivo);
-		tamanho_arquivo = atoi (string_arquivo);
-		vetor_dados[i] = tamanho_arquivo;
+		fscanf (file, "%s", file_string);
+		size_of_file = atoi (file_string);
+		data_arrays[i] = size_of_file;
 	}
 
-	fclose(arquivo);
+	fclose(file);
 
-	num_discos = worst_fit(vetor_dados, 1, N);
-	printf("WORST FIT : ");
-	printf("%d discos necessários \n", num_discos);
+	number_of_disks = worst_fit(data_arrays, 1, N);
+	printf ("WORST FIT : ");
+	printf ("%d discos necessários \n", number_of_disks);
 
-	num_discos = best_fit(vetor_dados, N);
-	printf("BEST FIT: ");
-	printf("%d discos necessários \n", num_discos);
+	number_of_disks = best_fit(data_arrays, N);
+	printf ("BEST FIT: ");
+	printf ("%d discos necessários \n", number_of_disks);
 
-	quicksort(vetor_dados, 1, N);
-	/*int k;
-	for(k=1;k<=N;k++){
-		printf("%d \n", vetor_dados[k]);
-	}*/
-	num_discos = worst_fit(vetor_dados, 1, N);
-	printf("WORST FIT DECRESCENTE: ");
-	printf("%d discos necessários \n", num_discos);
+	quicksort(data_arrays, 1, N);
 
-	num_discos = best_fit(vetor_dados, N);
-	printf("BEST FIT DECRESCENTE: ");
-	printf("%d discos necessários \n", num_discos);
+	number_of_disks = worst_fit(data_arrays, 1, N);
+	printf ("WORST FIT DECRESCENTE: ");
+	printf ("%d discos necessários \n", number_of_disks);
+
+	number_of_disks = best_fit(data_arrays, N);
+	printf ("BEST FIT DECRESCENTE: ");
+	printf ("%d discos necessários \n", number_of_disks);
 
 	return 0;
 }
