@@ -10,7 +10,7 @@
 
 #define TAMANHO_MAX_DISCO 1000000
 #define key(A)	(A)
-#define less(A, B)	(key(A) < key(B))
+#define less(B, A)	(key(A) < key(B))
 #define exch(A, B)	{ int t = A; A = B; B = t; }
 #define soma(A, B)	(A+B)
 

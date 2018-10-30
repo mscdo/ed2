@@ -37,6 +37,10 @@ int main(int argc, char *argv[]){
 	printf("%d discos necessários \n", num_discos);
 
 	quicksort(vetor_dados, 1, N);
+	/*int k;
+	for(k=1;k<=N;k++){
+		printf("%d \n", vetor_dados[k]);
+	}*/
 	num_discos = worst_fit(vetor_dados, 1, N);
 	printf("WORST FIT DECRESCENTE: ");
 	printf("%d discos necessários \n", num_discos);
